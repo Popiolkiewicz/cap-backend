@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpointAuthenticationFilter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -46,7 +47,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     private ClientDetailsService clientDetailsService;
 
     @Autowired
-    @Qualifier("authenticationManagerBean")
+    @Qualifier(value = "authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
     @Bean
@@ -72,6 +73,12 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         return converter;
     }
 
+    
+    @Bean
+    public TokenEndpointAuthenticationFilter tokenEndpointAuthenticationFilter() {
+        return new TokenEndpointAuthenticationFilter(authenticationManager, requestFactory());
+    }
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
@@ -80,8 +87,8 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     }
 
     @Bean
-    public TokenEndpointAuthenticationFilter tokenEndpointAuthenticationFilter() {
-        return new TokenEndpointAuthenticationFilter(authenticationManager, requestFactory());
+    public JdbcAuthorizationCodeServices jdbcAuthorizationCodeServices() {
+        return new JdbcAuthorizationCodeServices(dataSource);
     }
 
     @Override
@@ -97,7 +104,8 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
             .tokenStore(tokenStore())
             .tokenEnhancer(jwtAccessTokenConverter())
             .authenticationManager(authenticationManager)
-            .userDetailsService(userDetailsService);
+            .userDetailsService(userDetailsService)
+            .authorizationCodeServices(jdbcAuthorizationCodeServices());
     }
 
 }

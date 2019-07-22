@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         User user = userDao.findByUsername(username);
 
         if (user == null) {
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadCredentialsException("Bad credentials from userService");
         }
 
         new AccountStatusUserDetailsChecker().check(user);

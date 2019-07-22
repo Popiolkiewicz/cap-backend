@@ -112,4 +112,11 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", email=" + email + ", username=" + username + ", enabled=" + enabled
+                + ", accountNonLocked=" + accountNonLocked + ", accountNonExpired=" + accountNonExpired
+                + ", credentialsNonExpired=" + credentialsNonExpired + "]";
+    }
+
 }
