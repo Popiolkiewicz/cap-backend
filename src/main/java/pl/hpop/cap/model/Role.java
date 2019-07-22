@@ -1,5 +1,6 @@
 package pl.hpop.cap.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,7 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 @Entity(name = "t_role")
-public class Role {
+public class Role implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
